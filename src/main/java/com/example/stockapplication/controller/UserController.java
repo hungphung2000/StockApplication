@@ -20,7 +20,7 @@ public class UserController {
     private final StockService stockService;
 
     @GetMapping("/liked-stocks/{userId}")
-    public ResponseEntity<List<StockDTO>> getStocks(@PathVariable("userId") UUID userId) {
+    public ResponseEntity<List<StockDTO>> getStocks(@PathVariable("userId") int userId) {
         return ResponseEntity.ok(stockService.getFavoriteStocks(userId));
     }
 
@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @GetMapping("/bought-stocks/{userId}")
-    public ResponseEntity<List<StockDTO>> getBoughtStocks(@PathVariable("userId") UUID userId) {
+    public ResponseEntity<List<StockDTO>> getBoughtStocks(@PathVariable("userId") int userId) {
         return ResponseEntity.ok(stockService.getBoughtStocks(userId));
     }
 }

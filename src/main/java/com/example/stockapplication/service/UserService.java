@@ -37,6 +37,4 @@ public class UserService {
             log.error("SERVER ERROR");
         }
     }
-
-
 }

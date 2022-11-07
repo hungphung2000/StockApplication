@@ -20,7 +20,6 @@ public class AppController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<Void> signup(@RequestBody SignUpRequest signUpRequest) {
-        System.out.println(signUpRequest.getEmail() + "dhjghjgh");
         userService.addUser(signUpRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }

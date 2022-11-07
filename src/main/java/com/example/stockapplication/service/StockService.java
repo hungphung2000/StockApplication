@@ -129,7 +129,7 @@ public class StockService {
         }
     }
 
-    public List<StockDTO> getBoughtStocks(UUID userId) {
+    public List<StockDTO> getBoughtStocks(int userId) {
         return boughtUserStockRepository
                 .findByUser_Id(userId)
                 .stream()
@@ -137,7 +137,7 @@ public class StockService {
                 .collect(Collectors.toList());
     }
 
-    public List<StockDTO> getFavoriteStocks(UUID userId) {
+    public List<StockDTO> getFavoriteStocks(int userId) {
         return userStockRepository
                 .findByUser_Id(userId)
                 .stream()
