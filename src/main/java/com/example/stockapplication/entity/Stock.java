@@ -60,6 +60,7 @@ public class Stock {
         currentDebt = stockDTO.getCurrentDebt();
         totalLiabilities = stockDTO.getTotalLiabilities();
         stockPrice = stockDTO.getStockPrice();
+        eps = stockDTO.getEps();
         createdDate = LocalDateTime.now();
         lastUpdated = LocalDateTime.now();
     }

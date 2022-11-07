@@ -15,7 +15,7 @@ public class StockDTO {
 
     private String stockSymbol;
 
-    private float netProfit;
+        private float netProfit;
 
     private float totalAssets;
 
