@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface BoughtUserStockRepository extends JpaRepository<BoughtUserStock, UUID> {
+public interface BoughtUserStockRepository extends JpaRepository<BoughtUserStock, Integer> {
     Optional<BoughtUserStock> findByUser_IdAndStock_Id(UUID userId, UUID stockId);
 
     List<BoughtUserStock> findByUser_Id(UUID userId);

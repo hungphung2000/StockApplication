@@ -89,7 +89,7 @@ public class StockService {
         }
     }
 
-    public void updateStock(UUID stockId, StockDTO stockDTO) {
+    public void updateStock(int stockId, StockDTO stockDTO) {
         Optional<Stock> stockOptional = stockRepository.findById(stockId);
         stockOptional.orElseThrow(() -> new StockNotFoundException(stockId));
 
@@ -112,7 +112,7 @@ public class StockService {
         }
     }
 
-    public void processBuyStock(UUID userId, UUID stockId) {
+    public void processBuyStock(int userId, int stockId) {
         Optional<User> userOptional = userRepository.findById(userId);
         userOptional.orElseThrow(() -> new UserNotFoundException(userId));
 
@@ -145,7 +145,7 @@ public class StockService {
                 .collect(Collectors.toList());
     }
 
-    public void addFavoriteStock(UUID userId, UUID stockId) {
+    public void addFavoriteStock(int userId, int stockId) {
         Optional<User> userOptional = userRepository.findById(userId);
         userOptional.orElseThrow(() -> new UserNotFoundException(userId));
 

@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.UUID;
 
-public interface RuleRepository extends JpaRepository<Rule, UUID> {
+public interface RuleRepository extends JpaRepository<Rule, Integer> {
     @Query(value = "SELECT r.classified FROM Rule r " +
                     "WHERE r.profitability = :profitability " +
                     "AND r.activity = :activity " +

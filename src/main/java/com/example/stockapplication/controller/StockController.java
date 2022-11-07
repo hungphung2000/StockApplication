@@ -35,7 +35,7 @@ public class StockController {
     }
 
     @PutMapping("/update-stock/{stockId}")
-    public ResponseEntity<Void> updateStock(@PathVariable("stockId") UUID stockId,
+    public ResponseEntity<Void> updateStock(@PathVariable("stockId") int stockId,
                                             @RequestBody StockDTO stockDTO) {
         stockService.updateStock(stockId, stockDTO);
         return new ResponseEntity<>(HttpStatus.OK);

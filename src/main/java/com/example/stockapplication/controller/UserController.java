@@ -25,8 +25,8 @@ public class UserController {
     }
 
     @PostMapping("/follow-stock/{userId}/{stockId}")
-    public ResponseEntity<Void> addStock(@PathVariable("userId") UUID userId,
-                                         @PathVariable("stockId") UUID stockId) {
+    public ResponseEntity<Void> addStock(@PathVariable("userId") int userId,
+                                         @PathVariable("stockId") int stockId) {
         stockService.addFavoriteStock(userId, stockId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

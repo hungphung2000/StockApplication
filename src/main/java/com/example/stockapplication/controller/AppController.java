@@ -26,8 +26,8 @@ public class AppController {
     }
 
     @PostMapping("/user/buy-stock/{userId}/{stockId}")
-    public ResponseEntity<Void> buyStock(@PathVariable("userId") UUID userId,
-                                         @PathVariable("stockId") UUID stockId) {
+    public ResponseEntity<Void> buyStock(@PathVariable("userId") int userId,
+                                         @PathVariable("stockId") int stockId) {
         stockService.processBuyStock(userId, stockId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
