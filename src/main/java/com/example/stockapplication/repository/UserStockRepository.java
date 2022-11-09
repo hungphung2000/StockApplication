@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface UserStockRepository extends JpaRepository<UserStock, Integer> {
     Optional<UserStock> findByUser_IdAndStock_Id(int userId, int stockId);

@@ -8,9 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/stocks")
@@ -29,7 +29,7 @@ public class StockController {
     }
 
     @PostMapping("/add-stock")
-    public ResponseEntity<Void> addStock(@RequestBody StockDTO stockDTO) {
+    public ResponseEntity<Void> addStock(@RequestBody @Valid StockDTO stockDTO) {
         stockService.addStock(stockDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -39,5 +39,12 @@ public class StockController {
                                             @RequestBody StockDTO stockDTO) {
         stockService.updateStock(stockId, stockDTO);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<StockDTO>> searchStock(@RequestParam("stockSymbol") String stockSymbol,
+                                                      @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                      @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        return ResponseEntity.ok(stockService.searchStock(stockSymbol, startDate, endDate));
     }
 }

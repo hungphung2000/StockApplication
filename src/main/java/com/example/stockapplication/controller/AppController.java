@@ -1,14 +1,23 @@
 package com.example.stockapplication.controller;
 
+import com.example.stockapplication.domain.LoginRequest;
 import com.example.stockapplication.domain.SignUpRequest;
+import com.example.stockapplication.entity.User;
+import com.example.stockapplication.security.TokenProvider;
 import com.example.stockapplication.service.StockService;
 import com.example.stockapplication.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
+import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
@@ -18,8 +27,12 @@ public class AppController {
 
     private final StockService stockService;
 
+    private final AuthenticationManager authManager;
+
+    private final TokenProvider tokenProvider;
+
     @PostMapping("/sign-up")
-    public ResponseEntity<Void> signup(@RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<Void> signup(@RequestBody @Valid SignUpRequest signUpRequest) {
         userService.addUser(signUpRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -29,5 +42,23 @@ public class AppController {
                                          @PathVariable("stockId") int stockId) {
         stockService.processBuyStock(userId, stockId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
+            Authentication authentication = authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getUsername(), request.getPassword())
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String accessToken = tokenProvider.generateAccessToken(userDetails);
+
+            return ResponseEntity.ok().body(accessToken);
+
+        } catch (BadCredentialsException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 }

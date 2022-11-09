@@ -8,7 +8,6 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -33,7 +32,7 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String username;
 
     @Column(name = "password")

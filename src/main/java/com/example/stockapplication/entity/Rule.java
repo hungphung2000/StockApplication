@@ -2,7 +2,6 @@ package com.example.stockapplication.entity;
 
 import lombok.Data;
 import javax.persistence.*;
-import java.util.UUID;
 
 @Data
 @Entity

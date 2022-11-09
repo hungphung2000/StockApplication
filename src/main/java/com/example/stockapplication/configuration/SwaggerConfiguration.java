@@ -14,10 +14,11 @@ public class SwaggerConfiguration {
     public GroupedOpenApi publicApi() {
         return GroupedOpenApi.builder().group("StockApp").pathsToMatch("/api/**").build();
     }
+
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
             .components(new Components())
-            .info(new Info().title("NCC StockApp Api").contact(new Contact().name("NCC")).version("1.0.0"));
+            .info(new Info().title("StockApp Api").contact(new Contact().name("Stock")).version("1.0.0"));
     }
 }
