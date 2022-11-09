@@ -7,6 +7,7 @@ import com.example.stockapplication.entity.Stock;
 import com.example.stockapplication.entity.User;
 import com.example.stockapplication.entity.UserStock;
 import com.example.stockapplication.exception.AccessRepositoryException;
+import com.example.stockapplication.exception.StockAlreadyExistsException;
 import com.example.stockapplication.exception.StockNotFoundException;
 import com.example.stockapplication.exception.UserNotFoundException;
 import com.example.stockapplication.repository.*;
@@ -71,6 +72,10 @@ public class StockService {
     @Transactional
     public void addStock(StockDTO stockDTO) {
         Stock stock = new Stock(stockDTO);
+        int count = stockRepository.countByStockSymbolAndCreatedDate(stock.getStockSymbol(), LocalDate.now());
+        if (count > 0) {
+            throw new StockAlreadyExistsException("Stock already exists in system!");
+        }
 
         try {
             stockRepository.save(stock);
