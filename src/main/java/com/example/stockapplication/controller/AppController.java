@@ -1,6 +1,7 @@
 package com.example.stockapplication.controller;
 
 import com.example.stockapplication.domain.LoginRequest;
+import com.example.stockapplication.domain.LoginResponse;
 import com.example.stockapplication.domain.SignUpRequest;
 import com.example.stockapplication.entity.User;
 import com.example.stockapplication.security.TokenProvider;
@@ -21,6 +22,7 @@ import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
+@CrossOrigin(origins = "http://127.0.0.1:4200", maxAge = 3600)
 @RequestMapping("/app")
 public class AppController {
     private final UserService userService;
@@ -45,7 +47,7 @@ public class AppController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         try {
             Authentication authentication = authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -53,9 +55,10 @@ public class AppController {
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            int userId = userService.findUserByUsername(request.getUsername());
             String accessToken = tokenProvider.generateAccessToken(userDetails);
 
-            return ResponseEntity.ok().body(accessToken);
+            return ResponseEntity.ok(new LoginResponse(userId, accessToken));
 
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

@@ -3,6 +3,7 @@ package com.example.stockapplication.security;
 import com.example.stockapplication.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Collection;
 
@@ -24,7 +25,8 @@ public class DomainUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        return bCryptPasswordEncoder.encode(user.getPassword());
     }
 
     @Override

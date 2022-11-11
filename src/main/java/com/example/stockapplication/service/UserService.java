@@ -15,6 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
 
+    public int findUserByUsername(String username) {
+        return userRepository.findByUsername(username).get().getId();
+    }
+
     @Transactional
     public void addUser(SignUpRequest signUpRequest) {
         User user = new User(signUpRequest);

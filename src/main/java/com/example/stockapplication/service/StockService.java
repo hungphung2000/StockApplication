@@ -129,6 +129,25 @@ public class StockService {
         }
     }
 
+    @Transactional
+    public void buyStock(String username, int stockId) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        userOptional.orElseThrow(() -> new UserNotFoundException(username));
+
+        Optional<Stock> stockOptional = stockRepository.findById(stockId);
+        stockOptional.orElseThrow(() -> new StockNotFoundException(stockId));
+
+        BoughtUserStock boughtUserStock = new BoughtUserStock();
+        boughtUserStock.setUser(userOptional.get());
+        boughtUserStock.setStock(stockOptional.get());
+        try {
+            boughtUserStockRepository.save(boughtUserStock);
+        } catch (Exception e) {
+            log.error("SERVER ERROR");
+            throw new AccessRepositoryException("HAVE ERROR");
+        }
+    }
+
     public List<StockDTO> getBoughtStocks(int userId) {
         return boughtUserStockRepository
                 .findByUser_Id(userId)
