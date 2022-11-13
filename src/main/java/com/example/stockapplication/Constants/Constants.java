@@ -1,4 +1,4 @@
-package com.example.stockapplication.constants;
+package com.example.stockapplication.Constants;
 
 public interface Constants {
     String SELL = "SELL";

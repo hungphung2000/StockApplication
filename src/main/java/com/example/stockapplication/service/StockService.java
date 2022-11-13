@@ -1,6 +1,6 @@
 package com.example.stockapplication.service;
 
-import com.example.stockapplication.constants.Constants;
+import com.example.stockapplication.Constants.Constants;
 import com.example.stockapplication.domain.StockDTO;
 import com.example.stockapplication.entity.*;
 import com.example.stockapplication.exception.AccessRepositoryException;
