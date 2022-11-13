@@ -19,6 +19,11 @@ import java.util.List;
 public class StockController {
     private final StockService stockService;
 
+    @GetMapping("/get-tickets")
+    public ResponseEntity<List<String>> getStockTickets() {
+        return ResponseEntity.ok(stockService.getStockTickets());
+    }
+
     @GetMapping()
     public ResponseEntity<List<StockDTO>> filterStocks(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return ResponseEntity.ok(stockService.getStocksByDate(date));

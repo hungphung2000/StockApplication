@@ -1,11 +1,8 @@
 package com.example.stockapplication.service;
 
-import com.example.stockapplication.Constants.Constants;
+import com.example.stockapplication.constants.Constants;
 import com.example.stockapplication.domain.StockDTO;
-import com.example.stockapplication.entity.BoughtUserStock;
-import com.example.stockapplication.entity.Stock;
-import com.example.stockapplication.entity.User;
-import com.example.stockapplication.entity.UserStock;
+import com.example.stockapplication.entity.*;
 import com.example.stockapplication.exception.AccessRepositoryException;
 import com.example.stockapplication.exception.StockAlreadyExistsException;
 import com.example.stockapplication.exception.StockNotFoundException;
@@ -19,9 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +31,32 @@ public class StockService {
 
     private final UserStockRepository userStockRepository;
 
-    private BoughtUserStockRepository boughtUserStockRepository;
+    private final BoughtUserStockRepository boughtUserStockRepository;
+
+    private final StockTicketRepository stockTicketRepository;
+
+    public List<String> getStockTickets() {
+        return stockTicketRepository.findAllStockName();
+    }
+
+    public void addStockTicket(String stockName) {
+        Optional<StockTicket> stockTicketOptional = stockTicketRepository.findByStockName(stockName);
+        stockTicketOptional.orElseThrow(RuntimeException::new);
+
+        StockTicket stockTicket = new StockTicket();
+        stockTicket.setStockName(stockName);
+        stockTicket.setCreatedDate(LocalDateTime.now());
+        stockTicket.setLastUpdated(LocalDateTime.now());
+
+        try {
+            stockTicketRepository.save(stockTicket);
+        } catch (Exception e) {
+            log.error("ERROR SERVICE");
+            throw new AccessRepositoryException("GG_ERROR DO NOT SAVE!");
+        }
+    }
+
+
 
     public List<StockDTO> getStocksByDate(LocalDate date) {
         List<StockDTO> stocks = stockRepository

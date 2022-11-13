@@ -3,7 +3,6 @@ package com.example.stockapplication.controller;
 import com.example.stockapplication.domain.LoginRequest;
 import com.example.stockapplication.domain.LoginResponse;
 import com.example.stockapplication.domain.SignUpRequest;
-import com.example.stockapplication.entity.User;
 import com.example.stockapplication.security.TokenProvider;
 import com.example.stockapplication.service.StockService;
 import com.example.stockapplication.service.UserService;

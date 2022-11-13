@@ -1,7 +1,6 @@
 package com.example.stockapplication.entity;
 
 import com.example.stockapplication.domain.StockDTO;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -49,6 +48,10 @@ public class Stock {
 
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
+
+    @ManyToOne
+    @JoinColumn(name = "stock_ticket_id")
+    private StockTicket stockTicket;
 
     public Stock(StockDTO stockDTO) {
         stockSymbol = stockDTO.getStockSymbol();

@@ -1,10 +1,10 @@
 package com.example.stockapplication.entity;
 
 import com.example.stockapplication.domain.SignUpRequest;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.example.stockapplication.domain.UserDTO;
+import com.example.stockapplication.enums.EnumRole;
+import lombok.*;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -53,6 +53,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<BoughtUserStock>boughtUserStocks;
 
+    @Enumerated(EnumType.STRING)
+    private EnumRole role;
+
     public User(SignUpRequest signUpRequest) {
         this.cccd = signUpRequest.getCccd();
         this.firstName = signUpRequest.getFirstName();
@@ -63,5 +66,14 @@ public class User {
         this.createdDate = LocalDateTime.now();
         this.lastUpdated = LocalDateTime.now();
         this.status = true;
+    }
+
+    public UserDTO userDTO() {
+        return UserDTO.builder()
+                .cccd(this.cccd)
+                .email(this.email)
+                .firstName(this.firstName)
+                .lastName(this.lastName)
+                .build();
     }
 }

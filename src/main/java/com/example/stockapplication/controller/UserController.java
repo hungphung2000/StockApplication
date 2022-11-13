@@ -1,6 +1,8 @@
 package com.example.stockapplication.controller;
 
+import com.electronwill.nightconfig.core.conversion.Path;
 import com.example.stockapplication.domain.StockDTO;
+import com.example.stockapplication.domain.UserDTO;
 import com.example.stockapplication.service.StockService;
 import com.example.stockapplication.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,11 @@ public class UserController {
     private final UserService userService;
 
     private final StockService stockService;
+
+    @GetMapping("{id}")
+    public ResponseEntity<UserDTO> getUser(@PathVariable int id) {
+        return ResponseEntity.ok(userService.getUser(id));
+    }
 
     @GetMapping("/liked-stocks/{userId}")
     public ResponseEntity<List<StockDTO>> getStocks(@PathVariable("userId") int userId) {
