@@ -174,11 +174,15 @@ public class StockService {
     }
 
     public List<StockDTO> getFavoriteStocks(int userId) {
-        return userStockRepository
+        List<StockDTO> stockDTOS =  userStockRepository
                 .findByUser_Id(userId)
                 .stream()
                 .map(userStock -> userStock.getStock().stockDTO())
                 .collect(Collectors.toList());
+
+        stockDTOS.forEach(stockDTO -> stockDTO.setLabel(labelingStock(stockDTO)));
+
+        return stockDTOS;
     }
 
     @Transactional
@@ -237,14 +241,13 @@ public class StockService {
         boolean debt = debtRatio >= 1;
         boolean market = financialMarketPos >= 1;
 
-        String label = ruleRepository.findByIndexs(profitability, activity, liquidity, debt, market).get(0);
-        return label;
+        return ruleRepository.findByIndexs(profitability, activity, liquidity, debt, market).get(0);
     }
 
     @Transactional
     public void deleteLikedStock(int userId, int stockId) {
         Optional<UserStock> userStockOptional = userStockRepository.findByUser_IdAndStock_Id(userId, stockId);
-        if (!userStockOptional.isPresent()) {
+        if (userStockOptional.isEmpty()) {
             log.error("HAVE ERROR");
             throw new UserStockLikeNotFoundException("have not stock");
         }
@@ -259,7 +262,7 @@ public class StockService {
     @Transactional
     public void deleteBoughtStock(int userId, int stockId) {
         Optional<BoughtUserStock> boughtUserStockOptional = boughtUserStockRepository.findByUser_IdAndStock_Id(userId, stockId);
-        if (!boughtUserStockOptional.isPresent()) {
+        if (boughtUserStockOptional.isEmpty()) {
             log.error("HAVE ERROR");
             throw new UserStockLikeNotFoundException("have not stock");
         }
@@ -269,5 +272,13 @@ public class StockService {
         } catch (Exception e) {
             throw new AccessRepositoryException("HAVE ERROR IN DATABASE");
         }
+    }
+
+    @Transactional
+    public void buyStockOut(int userId, StockDTO stockDTO) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        userOptional.orElseThrow(() -> new UserNotFoundException(userId));
+
+        BoughtUserStock boughtUserStock = new BoughtUserStock();
     }
 }

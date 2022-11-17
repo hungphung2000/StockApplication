@@ -2,7 +2,6 @@ package com.example.stockapplication.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -25,6 +24,9 @@ public class BoughtUserStock {
 
     @Column(name = "price")
     private float price;
+
+    @Column(name = "stock_name")
+    private String stockName;
 
     @Column(name = "bought_at")
     LocalDateTime boughtAt;

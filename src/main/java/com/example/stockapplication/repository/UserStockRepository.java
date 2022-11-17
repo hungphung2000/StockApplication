@@ -2,7 +2,6 @@ package com.example.stockapplication.repository;
 
 import com.example.stockapplication.entity.UserStock;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
 import java.util.Optional;
 

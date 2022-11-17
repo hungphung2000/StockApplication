@@ -1,7 +1,6 @@
 package com.example.stockapplication.domain;
 
 import lombok.Data;
-
 import javax.validation.constraints.NotBlank;
 
 @Data

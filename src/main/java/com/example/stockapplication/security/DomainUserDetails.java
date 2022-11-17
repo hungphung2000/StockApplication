@@ -23,9 +23,7 @@ public class DomainUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority(user.getRole().name()));
-        return grantedAuthorities;
+        return null;
     }
 
     @Override

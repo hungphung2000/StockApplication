@@ -3,6 +3,7 @@ package com.example.stockapplication.controller;
 import com.example.stockapplication.domain.LoginRequest;
 import com.example.stockapplication.domain.LoginResponse;
 import com.example.stockapplication.domain.SignUpRequest;
+import com.example.stockapplication.domain.StockDTO;
 import com.example.stockapplication.security.DomainUserDetails;
 import com.example.stockapplication.security.TokenProvider;
 import com.example.stockapplication.service.StockService;
@@ -60,5 +61,12 @@ public class AppController {
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
+
+    @PostMapping("/user/add-stock-buy-out/{userId}")
+    public ResponseEntity<Void> buyStock(@PathVariable("userId") int userId,
+                                         @RequestBody @Valid StockDTO stockDTO)  {
+        stockService.buyStockOut(userId, stockDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

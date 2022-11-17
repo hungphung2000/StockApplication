@@ -1,7 +1,6 @@
 package com.example.stockapplication.domain;
 
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Data

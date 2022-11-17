@@ -4,7 +4,6 @@ import com.example.stockapplication.domain.SignUpRequest;
 import com.example.stockapplication.domain.UserDTO;
 import com.example.stockapplication.enums.EnumRole;
 import lombok.*;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;

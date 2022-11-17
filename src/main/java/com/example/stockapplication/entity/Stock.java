@@ -3,7 +3,6 @@ package com.example.stockapplication.entity;
 import com.example.stockapplication.domain.StockDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 

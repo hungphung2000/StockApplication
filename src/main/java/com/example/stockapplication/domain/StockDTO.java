@@ -3,7 +3,6 @@ package com.example.stockapplication.domain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
