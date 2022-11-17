@@ -1,6 +1,7 @@
 package com.example.stockapplication.controller;
 
 import com.example.stockapplication.domain.StockDTO;
+import com.example.stockapplication.domain.StockTicketDTO;
 import com.example.stockapplication.service.StockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -52,5 +53,11 @@ public class StockController {
                                                       @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                                       @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         return ResponseEntity.ok(stockService.searchStock(stockSymbol, startDate, endDate));
+    }
+
+    @PostMapping("/add-stock-ticket")
+    public ResponseEntity<?> addStockTicket(@RequestBody StockTicketDTO stockTicketDTO) {
+        stockService.addStockTicket(stockTicketDTO);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

@@ -1,6 +1,5 @@
 package com.example.stockapplication.controller;
 
-import com.electronwill.nightconfig.core.conversion.Path;
 import com.example.stockapplication.domain.StockDTO;
 import com.example.stockapplication.domain.UserDTO;
 import com.example.stockapplication.service.StockService;
@@ -30,8 +29,8 @@ public class UserController {
         return ResponseEntity.ok(stockService.getFavoriteStocks(userId));
     }
 
-    @PostMapping("/follow-stock/{userId}/{stockId}")
-    public ResponseEntity<Void> addStock(@PathVariable("userId") int userId,
+    @PostMapping("/favorite-stock/{userId}/{stockId}")
+    public ResponseEntity<Void> addFavoriteStock(@PathVariable("userId") int userId,
                                          @PathVariable("stockId") int stockId) {
         stockService.addFavoriteStock(userId, stockId);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -40,5 +39,19 @@ public class UserController {
     @GetMapping("/bought-stocks/{userId}")
     public ResponseEntity<List<StockDTO>> getBoughtStocks(@PathVariable("userId") int userId) {
         return ResponseEntity.ok(stockService.getBoughtStocks(userId));
+    }
+
+    @DeleteMapping("/stocks-like/delete/{userId}/{stockId}")
+    public ResponseEntity<Void> deleteLikedStock(@PathVariable("userId") int userId,
+                                                 @PathVariable("stockId") int stockId) {
+        stockService.deleteLikedStock(userId, stockId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/stocks-bought/delete/{userId}/{stockId}")
+    public ResponseEntity<Void> deleteBoughtStock(@PathVariable("userId") int userId,
+                                                 @PathVariable("stockId") int stockId) {
+        stockService.deleteBoughtStock(userId, stockId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -25,7 +25,7 @@ public interface StockRepository extends JpaRepository<Stock, Integer> {
                                                        @Param("startDate") LocalDate startDate,
                                                        @Param("endDate") LocalDate endDate);
 
-    @Query("SELECT count(s) FROM Stock s WHERE s.stockSymbol = :stockSymbol AND DATE(s.createdDate) >= :date")
+    @Query("SELECT count(s) FROM Stock s WHERE s.stockSymbol = :stockSymbol AND s.createdDate >= :date")
     int countByStockSymbolAndCreatedDate(@Param("stockSymbol") String stockSymbol,
-                                         @Param("date") LocalDate date);
+                                         @Param("date") LocalDateTime date);
 }

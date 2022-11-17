@@ -3,13 +3,11 @@ package com.example.stockapplication.security;
 import com.example.stockapplication.entity.User;
 import com.example.stockapplication.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Optional;
 
 @Component

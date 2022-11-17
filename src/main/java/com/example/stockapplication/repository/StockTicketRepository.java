@@ -11,5 +11,6 @@ public interface StockTicketRepository extends JpaRepository<StockTicket, Intege
     @Query("SELECT s.stockName FROM StockTicket s")
     List<String> findAllStockName();
 
-    Optional<StockTicket> findByStockName(String stockName);
+    @Query("SELECT s FROM StockTicket s WHERE s.stockName = ?1")
+    StockTicket findByStockName(String stockName);
 }

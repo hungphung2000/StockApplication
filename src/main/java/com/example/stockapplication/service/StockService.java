@@ -2,11 +2,9 @@ package com.example.stockapplication.service;
 
 import com.example.stockapplication.Constants.Constants;
 import com.example.stockapplication.domain.StockDTO;
+import com.example.stockapplication.domain.StockTicketDTO;
 import com.example.stockapplication.entity.*;
-import com.example.stockapplication.exception.AccessRepositoryException;
-import com.example.stockapplication.exception.StockAlreadyExistsException;
-import com.example.stockapplication.exception.StockNotFoundException;
-import com.example.stockapplication.exception.UserNotFoundException;
+import com.example.stockapplication.exception.*;
 import com.example.stockapplication.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,15 +37,16 @@ public class StockService {
         return stockTicketRepository.findAllStockName();
     }
 
-    public void addStockTicket(String stockName) {
-        Optional<StockTicket> stockTicketOptional = stockTicketRepository.findByStockName(stockName);
-        stockTicketOptional.orElseThrow(RuntimeException::new);
+    @Transactional
+    public void addStockTicket(StockTicketDTO stockTicketDTO) {
+        String stockName = stockTicketDTO.getStockName();
+        System.out.println(stockName);
+        StockTicket stockTicketOptional = stockTicketRepository.findByStockName(stockName);
+        if (stockTicketOptional != null) {
+            throw new AccessRepositoryException("HAVE ERROR");
+        }
 
-        StockTicket stockTicket = new StockTicket();
-        stockTicket.setStockName(stockName);
-        stockTicket.setCreatedDate(LocalDateTime.now());
-        stockTicket.setLastUpdated(LocalDateTime.now());
-
+        StockTicket stockTicket = new StockTicket(stockTicketDTO);
         try {
             stockTicketRepository.save(stockTicket);
         } catch (Exception e) {
@@ -55,8 +54,6 @@ public class StockService {
             throw new AccessRepositoryException("GG_ERROR DO NOT SAVE!");
         }
     }
-
-
 
     public List<StockDTO> getStocksByDate(LocalDate date) {
         List<StockDTO> stocks = stockRepository
@@ -92,7 +89,7 @@ public class StockService {
     @Transactional
     public void addStock(StockDTO stockDTO) {
         Stock stock = new Stock(stockDTO);
-        int count = stockRepository.countByStockSymbolAndCreatedDate(stock.getStockSymbol(), LocalDate.now());
+        int count = stockRepository.countByStockSymbolAndCreatedDate(stock.getStockSymbol(), LocalDate.now().atStartOfDay());
         if (count > 0) {
             throw new StockAlreadyExistsException("Stock already exists in system!");
         }
@@ -204,10 +201,9 @@ public class StockService {
     }
 
     public String judgingStock(String stockSymbol, float currentStockPrice) {
-        LocalDate startDate = LocalDate.now().minusDays(Constants.ADAY);
+        LocalDate startDate = LocalDate.now().minusDays(Constants.ONE);
         LocalDate endDate = LocalDate.now();
         float beforeStockPrice = stockRepository.findStockPriceByStockSymBolAndDate(stockSymbol, startDate, endDate).get(0);
-
         boolean isStockIncrease = currentStockPrice >= 1.2 * beforeStockPrice;
         boolean isStockDecrease = currentStockPrice <= 0.92 * beforeStockPrice;
 
@@ -243,5 +239,35 @@ public class StockService {
 
         String label = ruleRepository.findByIndexs(profitability, activity, liquidity, debt, market).get(0);
         return label;
+    }
+
+    @Transactional
+    public void deleteLikedStock(int userId, int stockId) {
+        Optional<UserStock> userStockOptional = userStockRepository.findByUser_IdAndStock_Id(userId, stockId);
+        if (!userStockOptional.isPresent()) {
+            log.error("HAVE ERROR");
+            throw new UserStockLikeNotFoundException("have not stock");
+        }
+
+        try {
+            userStockRepository.delete(userStockOptional.get());
+        } catch (Exception e) {
+            throw new AccessRepositoryException("HAVE ERROR IN DATABASE");
+        }
+    }
+
+    @Transactional
+    public void deleteBoughtStock(int userId, int stockId) {
+        Optional<BoughtUserStock> boughtUserStockOptional = boughtUserStockRepository.findByUser_IdAndStock_Id(userId, stockId);
+        if (!boughtUserStockOptional.isPresent()) {
+            log.error("HAVE ERROR");
+            throw new UserStockLikeNotFoundException("have not stock");
+        }
+
+        try {
+            boughtUserStockRepository.delete(boughtUserStockOptional.get());
+        } catch (Exception e) {
+            throw new AccessRepositoryException("HAVE ERROR IN DATABASE");
+        }
     }
 }

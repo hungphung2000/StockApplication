@@ -2,10 +2,13 @@ package com.example.stockapplication.security;
 
 import com.example.stockapplication.entity.User;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class DomainUserDetails implements UserDetails {
     private User user;
@@ -20,7 +23,9 @@ public class DomainUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority(user.getRole().name()));
+        return grantedAuthorities;
     }
 
     @Override

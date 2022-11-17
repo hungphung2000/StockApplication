@@ -4,13 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotBlank;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class StockTicketDTO {
+    @NotBlank
     private String stockName;
 
-    private LocalDateTime createdDate;
+    @NotBlank
+    private String companyName;
 }

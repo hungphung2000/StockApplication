@@ -10,6 +10,10 @@ public interface Constants {
 
     int ADAY = 1;
 
+    int ONE = 1;
+
+    int FIVE = 5;
+
     String AUTHORIZATION_HEADER = "Authorization";
     String HEADER_BEARER = "Bearer ";
 }

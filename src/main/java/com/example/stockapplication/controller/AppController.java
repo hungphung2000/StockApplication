@@ -3,6 +3,7 @@ package com.example.stockapplication.controller;
 import com.example.stockapplication.domain.LoginRequest;
 import com.example.stockapplication.domain.LoginResponse;
 import com.example.stockapplication.domain.SignUpRequest;
+import com.example.stockapplication.security.DomainUserDetails;
 import com.example.stockapplication.security.TokenProvider;
 import com.example.stockapplication.service.StockService;
 import com.example.stockapplication.service.UserService;
@@ -14,7 +15,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -46,19 +46,17 @@ public class AppController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
         try {
             Authentication authentication = authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getUsername(), request.getPassword())
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            int userId = userService.findUserByUsername(request.getUsername());
+            DomainUserDetails userDetails = (DomainUserDetails) authentication.getPrincipal();
             String accessToken = tokenProvider.generateAccessToken(userDetails);
 
-            return ResponseEntity.ok(new LoginResponse(userId, accessToken));
-
+            return ResponseEntity.ok(new LoginResponse(userDetails.getId(), accessToken));
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

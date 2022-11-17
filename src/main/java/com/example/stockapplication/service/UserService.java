@@ -37,7 +37,7 @@ public class UserService {
         }
 
         User user = new User(signUpRequest);
-        user.setRole(EnumRole.ROLE_CUSTOMER);
+        user.setRole(EnumRole.USER);
         try {
             userRepository.save(user);
         } catch (Exception e) {
