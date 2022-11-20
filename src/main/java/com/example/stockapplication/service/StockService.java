@@ -10,9 +10,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,9 +42,9 @@ public class StockService {
     @Transactional
     public void addStockTicket(StockTicketDTO stockTicketDTO) {
         String stockName = stockTicketDTO.getStockName();
-        System.out.println(stockName);
         StockTicket stockTicketOptional = stockTicketRepository.findByStockName(stockName);
         if (stockTicketOptional != null) {
+            log.error("ERROR SERVICE");
             throw new AccessRepositoryException("HAVE ERROR");
         }
 
@@ -56,33 +58,31 @@ public class StockService {
     }
 
     public List<StockDTO> getStocksByDate(LocalDate date) {
-        List<StockDTO> stocks = stockRepository
-                .findByCreatedDate(date.atStartOfDay())
-                .stream()
-                .map(Stock::stockDTO)
-                .collect(Collectors.toList());
+        List<StockDTO> stocks = stockRepository.findByCreatedDate(date.atStartOfDay());
         stocks.forEach(stock -> stock.setLabel(labelingStock(stock)));
+
         return stocks;
     }
 
     public List<StockDTO> searchStock(String stockSymbol, LocalDate startDate, LocalDate endDate) {
         List<StockDTO> stocks = stockRepository
-                .findByStockSymbolAndTimeBetween(stockSymbol, startDate.atStartOfDay(), endDate.atStartOfDay())
-                .stream()
-                .map(Stock::stockDTO)
-                .collect(Collectors.toList());
+                .findByStockSymbolAndTimeBetween(stockSymbol, startDate.atStartOfDay(), endDate.atStartOfDay());
 
         return stocks;
     }
 
     public List<StockDTO> getAllStocks() {
-        List<StockDTO> stocks = stockRepository
-                                .findAll()
+        List<Stock> stocks = stockRepository.findAll();
+        if (!CollectionUtils.isEmpty(stocks)) {
+            return new ArrayList<>();
+        }
+        List<StockDTO> stockDTOS = stockRepository.findAll()
                                 .stream()
                                 .map(Stock::stockDTO)
                                 .collect(Collectors.toList());
-        stocks.forEach(stock -> stock.setLabel(labelingStock(stock)));
-        return stocks;
+        stockDTOS.forEach(stockDTO -> stockDTO.setLabel(labelingStock(stockDTO)));
+
+        return stockDTOS;
     };
 
 
@@ -91,7 +91,7 @@ public class StockService {
         Stock stock = new Stock(stockDTO);
         int count = stockRepository.countByStockSymbolAndCreatedDate(stock.getStockSymbol(), LocalDate.now().atStartOfDay());
         if (count > 0) {
-            throw new StockAlreadyExistsException("Stock already exists in system!");
+            throw new StockAlreadyExistsException("Stock already exists in system by date!");
         }
 
         try {
@@ -134,10 +134,9 @@ public class StockService {
 
         Optional<Stock> stockOptional = stockRepository.findById(stockId);
         stockOptional.orElseThrow(() -> new StockNotFoundException(stockId));
+        Stock stock = stockOptional.get();
 
-        BoughtUserStock boughtUserStock = new BoughtUserStock();
-        boughtUserStock.setUser(userOptional.get());
-        boughtUserStock.setStock(stockOptional.get());
+        BoughtUserStock boughtUserStock = new BoughtUserStock(userOptional.get(), stock, stock.getStockPrice(), stock.getStockSymbol());
         try {
             boughtUserStockRepository.save(boughtUserStock);
         } catch (Exception e) {
@@ -153,10 +152,9 @@ public class StockService {
 
         Optional<Stock> stockOptional = stockRepository.findById(stockId);
         stockOptional.orElseThrow(() -> new StockNotFoundException(stockId));
+        Stock stock = stockOptional.get();
 
-        BoughtUserStock boughtUserStock = new BoughtUserStock();
-        boughtUserStock.setUser(userOptional.get());
-        boughtUserStock.setStock(stockOptional.get());
+        BoughtUserStock boughtUserStock = new BoughtUserStock(userOptional.get(), stock, stock.getStockPrice(), stock.getStockSymbol());
         try {
             boughtUserStockRepository.save(boughtUserStock);
         } catch (Exception e) {
@@ -166,20 +164,26 @@ public class StockService {
     }
 
     public List<StockDTO> getBoughtStocks(int userId) {
-        return boughtUserStockRepository
-                .findByUser_Id(userId)
+        List<BoughtUserStock> boughtUserStocks = boughtUserStockRepository.findByUser_Id(userId);
+        if (CollectionUtils.isEmpty(boughtUserStocks)) {
+            return new ArrayList<>();
+        }
+
+        return  boughtUserStocks
                 .stream()
                 .map(boughtUserStock -> boughtUserStock.getStock().stockDTO())
                 .collect(Collectors.toList());
     }
 
     public List<StockDTO> getFavoriteStocks(int userId) {
-        List<StockDTO> stockDTOS =  userStockRepository
-                .findByUser_Id(userId)
+        List<UserStock> userStocks = userStockRepository.findByUser_Id(userId);
+        if (CollectionUtils.isEmpty(userStocks)) {
+            return new ArrayList<>();
+        }
+        List<StockDTO> stockDTOS = userStocks
                 .stream()
                 .map(userStock -> userStock.getStock().stockDTO())
                 .collect(Collectors.toList());
-
         stockDTOS.forEach(stockDTO -> stockDTO.setLabel(labelingStock(stockDTO)));
 
         return stockDTOS;
@@ -193,9 +197,7 @@ public class StockService {
         Optional<Stock> stockOptional = stockRepository.findById(stockId);
         stockOptional.orElseThrow(() -> new StockNotFoundException(stockId));
 
-        UserStock userStock = new UserStock();
-        userStock.setUser(userOptional.get());
-        userStock.setStock(stockOptional.get());
+        UserStock userStock = new UserStock(userOptional.get(), stockOptional.get());
         try {
             userStockRepository.save(userStock);
         } catch (Exception e) {
@@ -220,14 +222,14 @@ public class StockService {
 
 
     public String labelingStock(StockDTO stock) {
-        float netProfit = stock.getNetProfit(); //lợi nhuận ròng
-        float stockPrice = stock.getStockPrice(); // giá cổ phiếu
-        float revenue = stock.getRevenue(); // tổng doanh thu
-        float currentAssets = stock.getCurrentAssets(); // tài sản hiện tại
-        float totalLiabilities = stock.getTotalLiabilities(); // tổng nợ phải trả
-        float currentDebt = stock.getCurrentDebt(); // nợ hiện tại
-        float totalAssets = stock.getTotalAssets(); // tổng tài sản
-        float eps = stock.getEps(); //loi nhuan tren mot chung khoan
+        float netProfit = stock.getNetProfit();
+        float stockPrice = stock.getStockPrice();
+        float revenue = stock.getRevenue();
+        float currentAssets = stock.getCurrentAssets();
+        float totalLiabilities = stock.getTotalLiabilities();
+        float currentDebt = stock.getCurrentDebt();
+        float totalAssets = stock.getTotalAssets();
+        float eps = stock.getEps();
 
         float returnOnAsset = netProfit / totalAssets;
         float totalAssetsRatio = revenue / totalAssets;
@@ -270,15 +272,8 @@ public class StockService {
         try {
             boughtUserStockRepository.delete(boughtUserStockOptional.get());
         } catch (Exception e) {
+            log.error("HAVE ERROR");
             throw new AccessRepositoryException("HAVE ERROR IN DATABASE");
         }
-    }
-
-    @Transactional
-    public void buyStockOut(int userId, StockDTO stockDTO) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        userOptional.orElseThrow(() -> new UserNotFoundException(userId));
-
-        BoughtUserStock boughtUserStock = new BoughtUserStock();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.stockapplication.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
@@ -30,4 +31,12 @@ public class BoughtUserStock {
 
     @Column(name = "bought_at")
     LocalDateTime boughtAt;
+
+    public BoughtUserStock(User user, Stock stock, float price, String stockName) {
+        this.user = user;
+        this.stock = stock;
+        this.price = price;
+        this.stockName = stockName;
+        this.boughtAt = LocalDateTime.now();
+    }
 }

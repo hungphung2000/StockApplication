@@ -42,4 +42,20 @@ public class StockDTO {
     private LocalDateTime createdDate;
 
     private String label;
+
+    public StockDTO(int id, String stockSymbol, float netProfit, float totalAssets,
+                    float revenue, float currentAssets, float currentDebt,
+                    float totalLiabilities, float stockPrice, float eps, LocalDateTime createdDate) {
+        this.id = id;
+        this.stockSymbol = stockSymbol;
+        this.netProfit = netProfit;
+        this.totalAssets = totalAssets;
+        this.revenue = revenue;
+        this.currentAssets = currentAssets;
+        this.currentDebt = currentDebt;
+        this.totalLiabilities = totalLiabilities;
+        this.stockPrice = stockPrice;
+        this.eps = eps;
+        this.createdDate = createdDate;
+    }
 }

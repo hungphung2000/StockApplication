@@ -2,10 +2,10 @@ package com.example.stockapplication.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -18,18 +18,6 @@ public class SignUpRequest {
 
     @NotNull(message = "LastName is required!")
     private String lastName;
-
-    @NotNull(message = "DateOfBirth is required!")
-    private LocalDate dateOfBirth;
-
-    @NotNull(message = "Sex is required!")
-    private String sex;
-
-    @NotNull(message = "Address is required!")
-    private String address;
-
-    @NotNull(message = "PhoneNumber is required!")
-    private String phoneNumber;
 
     @Email(message = "Email should be valid!")
     private String email;

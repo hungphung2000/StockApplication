@@ -24,4 +24,10 @@ public class UserStock {
 
     @Column(name = "registered_at")
     LocalDateTime registeredAt;
+
+    public UserStock(User user, Stock stock) {
+        this.user = user;
+        this.stock = stock;
+        this.registeredAt = LocalDateTime.now();
+    }
 }

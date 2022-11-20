@@ -1,5 +1,6 @@
 package com.example.stockapplication.repository;
 
+import com.example.stockapplication.domain.StockDTO;
 import com.example.stockapplication.entity.Stock;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,12 +10,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface StockRepository extends JpaRepository<Stock, Integer> {
-    @Query("SELECT s FROM Stock s WHERE s.createdDate >= ?1")
-    List<Stock> findByCreatedDate(LocalDateTime date);
+    @Query("SELECT new com.example.stockapplication.domain.StockDTO(s.id, s.stockSymbol, s.netProfit, s.totalAssets, s.revenue, s.currentAssets, s.currentDebt, s.totalLiabilities, s.stockPrice, s.eps, s.createdDate) " +
+            "FROM Stock s WHERE s.createdDate >= :date")
+    List<StockDTO> findByCreatedDate(@Param("date") LocalDateTime date);
 
-    @Query("SELECT s FROM Stock s WHERE s.stockSymbol LIKE :stockSymbol " +
+    @Query("SELECT new com.example.stockapplication.domain.StockDTO(s.id, s.stockSymbol, s.netProfit, s.totalAssets, s.revenue, s.currentAssets, s.currentDebt, s.totalLiabilities, s.stockPrice, s.eps, s.createdDate) " +
+            "FROM Stock s WHERE s.stockSymbol LIKE :stockSymbol " +
             "AND s.createdDate <= :endDate AND s.createdDate >= :startDate")
-    List<Stock> findByStockSymbolAndTimeBetween(@Param("stockSymbol") String stockSymbol,
+    List<StockDTO> findByStockSymbolAndTimeBetween(@Param("stockSymbol") String stockSymbol,
                                                 @Param("startDate") LocalDateTime startDate,
                                                 @Param("endDate") LocalDateTime endDate);
 
