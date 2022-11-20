@@ -2,9 +2,7 @@ package com.example.stockapplication.security;
 
 import com.example.stockapplication.Constants.Constants;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -14,9 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class JwtTokenFilter extends OncePerRequestFilter {
@@ -49,7 +45,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private String getAccessToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(Constants.AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer "))
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(Constants.HEADER_BEARER))
             return bearerToken.substring(7);
         return null;
     }

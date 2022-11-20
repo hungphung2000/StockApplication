@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -56,8 +55,6 @@ public class WebSecurity {
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(PUBLIC_ENDPOINTS).permitAll()
                 .antMatchers("/app/**").permitAll()
-//                .antMatchers("/stocks/add-stock").hasRole(ADMIN_ROLE)
-//                .antMatchers("stocks/add-stock-ticket").hasAuthority(ADMIN_ROLE)
                 .antMatchers("/stocks/**").permitAll()
                 .antMatchers("/users/**").permitAll();
         http.addFilterBefore(new JwtTokenFilter(tokenProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
