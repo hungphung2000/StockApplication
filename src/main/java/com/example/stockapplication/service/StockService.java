@@ -164,25 +164,25 @@ public class StockService {
     }
 
     public List<StockDTO> getBoughtStocks(int userId) {
-        List<BoughtUserStock> boughtUserStocks = boughtUserStockRepository.findByUser_Id(userId);
+        List<Stock> boughtUserStocks = boughtUserStockRepository.findByUser_Id(userId);
         if (CollectionUtils.isEmpty(boughtUserStocks)) {
             return new ArrayList<>();
         }
 
         return  boughtUserStocks
                 .stream()
-                .map(boughtUserStock -> boughtUserStock.getStock().stockDTO())
+                .map(Stock::stockDTO)
                 .collect(Collectors.toList());
     }
 
     public List<StockDTO> getFavoriteStocks(int userId) {
-        List<UserStock> userStocks = userStockRepository.findByUser_Id(userId);
+        List<Stock> userStocks = userStockRepository.findByUser_Id(userId);
         if (CollectionUtils.isEmpty(userStocks)) {
             return new ArrayList<>();
         }
         List<StockDTO> stockDTOS = userStocks
                 .stream()
-                .map(userStock -> userStock.getStock().stockDTO())
+                .map(Stock::stockDTO)
                 .collect(Collectors.toList());
         stockDTOS.forEach(stockDTO -> stockDTO.setLabel(labelingStock(stockDTO)));
 
@@ -209,7 +209,8 @@ public class StockService {
     public String judgingStock(String stockSymbol, float currentStockPrice) {
         LocalDate startDate = LocalDate.now().minusDays(Constants.ONE);
         LocalDate endDate = LocalDate.now();
-        float beforeStockPrice = stockRepository.findStockPriceByStockSymBolAndDate(stockSymbol, startDate, endDate).get(0);
+        float beforeStockPrice = stockRepository
+                .findStockPriceByStockSymBolAndDate(stockSymbol, startDate, endDate).get(0);
         boolean isStockIncrease = currentStockPrice >= 1.2 * beforeStockPrice;
         boolean isStockDecrease = currentStockPrice <= 0.92 * beforeStockPrice;
 
