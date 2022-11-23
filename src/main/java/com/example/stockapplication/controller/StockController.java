@@ -19,7 +19,25 @@ import java.util.List;
 public class StockController {
     private final StockService stockService;
 
-    @GetMapping("/get-tickets")
+    @GetMapping()
+    public ResponseEntity<List<StockDTO>> getStocks() {
+        return ResponseEntity.ok(stockService.getAllStocks());
+    }
+
+    @PostMapping()
+    public ResponseEntity<Void> addStock(@RequestBody @Valid StockDTO stockDTO) {
+        stockService.addStock(stockDTO);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{stockId}")
+    public ResponseEntity<Void> updateStock(@PathVariable("stockId") int stockId,
+                                            @RequestBody StockDTO stockDTO) {
+        stockService.updateStock(stockId, stockDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/tickets")
     public ResponseEntity<List<String>> getStockTickets() {
         return ResponseEntity.ok(stockService.getStockTickets());
     }
@@ -29,24 +47,6 @@ public class StockController {
         return ResponseEntity.ok(stockService.getStocksByDate(date));
     }
 
-    @GetMapping("/get-all")
-    public ResponseEntity<List<StockDTO>> getStocks() {
-        return ResponseEntity.ok(stockService.getAllStocks());
-    }
-
-    @PostMapping("/add-stock")
-    public ResponseEntity<Void> addStock(@RequestBody @Valid StockDTO stockDTO) {
-        stockService.addStock(stockDTO);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @PutMapping("/update-stock/{stockId}")
-    public ResponseEntity<Void> updateStock(@PathVariable("stockId") int stockId,
-                                            @RequestBody StockDTO stockDTO) {
-        stockService.updateStock(stockId, stockDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
     @GetMapping("/search")
     public ResponseEntity<List<StockDTO>> searchStock(@RequestParam("stockSymbol") String stockSymbol,
                                                       @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
@@ -54,7 +54,7 @@ public class StockController {
         return ResponseEntity.ok(stockService.searchStock(stockSymbol, startDate, endDate));
     }
 
-    @PostMapping("/add-stock-ticket")
+    @PostMapping("/tickets")
     public ResponseEntity<?> addStockTicket(@RequestBody StockTicketDTO stockTicketDTO) {
         stockService.addStockTicket(stockTicketDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);

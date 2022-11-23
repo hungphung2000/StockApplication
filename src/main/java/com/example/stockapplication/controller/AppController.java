@@ -26,8 +26,6 @@ import javax.validation.Valid;
 public class AppController {
     private final UserService userService;
 
-    private final StockService stockService;
-
     private final AuthenticationManager authManager;
 
     private final TokenProvider tokenProvider;
@@ -35,13 +33,6 @@ public class AppController {
     @PostMapping("/sign-up")
     public ResponseEntity<Void> signup(@RequestBody @Valid SignUpRequest signUpRequest) {
         userService.addUser(signUpRequest);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PostMapping("/user/buy-stock/{userId}/{stockId}")
-    public ResponseEntity<Void> buyStock(@PathVariable("userId") int userId,
-                                         @PathVariable("stockId") int stockId) {
-        stockService.processBuyStock(userId, stockId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

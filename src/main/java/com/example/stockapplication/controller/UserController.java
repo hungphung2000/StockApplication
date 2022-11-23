@@ -19,39 +19,46 @@ public class UserController {
 
     private final StockService stockService;
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUser(@PathVariable int id) {
         return ResponseEntity.ok(userService.getUser(id));
     }
 
-    @GetMapping("/liked-stocks/{userId}")
+    @GetMapping("{userId}/liked-stocks")
     public ResponseEntity<List<StockDTO>> getStocks(@PathVariable("userId") int userId) {
         return ResponseEntity.ok(stockService.getFavoriteStocks(userId));
     }
 
-    @PostMapping("/favorite-stock/{userId}/{stockId}")
+    @PostMapping("{userId}/favorite-stocks/{stockId}")
     public ResponseEntity<Void> addFavoriteStock(@PathVariable("userId") int userId,
                                          @PathVariable("stockId") int stockId) {
         stockService.addFavoriteStock(userId, stockId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/bought-stocks/{userId}")
+    @GetMapping("/{userId}/bought-stocks")
     public ResponseEntity<List<StockDTO>> getBoughtStocks(@PathVariable("userId") int userId) {
         return ResponseEntity.ok(stockService.getBoughtStocks(userId));
     }
 
-    @DeleteMapping("/stocks-like/delete/{userId}/{stockId}")
+    @DeleteMapping("{userId}/stocks-like/{stockId}")
     public ResponseEntity<Void> deleteLikedStock(@PathVariable("userId") int userId,
                                                  @PathVariable("stockId") int stockId) {
         stockService.deleteLikedStock(userId, stockId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/stocks-bought/delete/{userId}/{stockId}")
+    @DeleteMapping("/{userId}/stocks-bought/{stockId}")
     public ResponseEntity<Void> deleteBoughtStock(@PathVariable("userId") int userId,
                                                  @PathVariable("stockId") int stockId) {
         stockService.deleteBoughtStock(userId, stockId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/{userId}/buy-stock/{stockId}")
+    public ResponseEntity<Void> buyStock(@PathVariable("userId") int userId,
+                                         @PathVariable("stockId") int stockId) {
+        stockService.processBuyStock(userId, stockId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
